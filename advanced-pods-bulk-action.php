@@ -65,6 +65,7 @@ function pods_ui_pre_init( $args ) {
 		pods_log('pods_ui_pre_init', 'Processing bulk action and clearing bulk ids: '.print_r($bulk_ids, true));
 		$_GET['action_bulk_ids'] = $bulk_ids;
 		pods_v_set_bulk_ids(array());
+		pods_log('pods_ui_pre_init', 'Check GET request: '.print_r($_GET, true));
 	}
 
 	// Management screen has been opened using the menu
