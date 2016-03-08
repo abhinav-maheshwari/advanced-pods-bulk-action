@@ -29,11 +29,12 @@ function isset_pods_v_bulk_ids() {
  * when new search happens or menu is clicked
  */
 function pods_ui_pre_init( $args ) {
-	if (isset($_REQUEST['referrer_pg']) ){
+	if (isset($_REQUEST['referrer_pg']) && $_REQUEST['action_bulk'] == '-1'){
 		$pg = $_REQUEST['referrer_pg'];
-	}
-	else {
-		$pg = '1';
+	} else if (isset ($_REQUEST['pg'])) {
+		$pg = $_REQUEST['pg'];
+	} else {
+		$pg = 1;
 	}
 
 	foreach ($_POST as $var => $value) {
@@ -59,12 +60,14 @@ function pods_ui_pre_init( $args ) {
 		pods_v_set_bulk_ids(array());
 	}
 
+	// Apply button has been clicked. Run the bulk action.
 	else if (isset($_REQUEST['action_bulk']) && $_REQUEST['action_bulk'] != '-1') {
 		pods_log('pods_ui_pre_init', 'Processing bulk action and clearing bulk ids: '.print_r($bulk_ids, true));
 		$_GET['action_bulk_ids'] = $bulk_ids;
 		pods_v_set_bulk_ids(array());
 	}
 
+	// Management screen has been opened using the menu
 	else if (!isset($_REQUEST['action_bulk']) && !isset($_REQUEST['pg']) && !isset($_REQUEST['action_bulk'])) {
 		pods_log('pods_ui_pre_init', 'Opening manage and clearing bulk ids');
 		pods_v_set_bulk_ids(array());
@@ -98,7 +101,7 @@ add_action( 'admin_init', 'start_session', 1 );
 function pods_pagination_fix( $suffix ) {
 	// include on all pods-manage screens
 	if( stripos(get_current_screen()->id,'pods-manage') ) {
-		wp_enqueue_script( 'pods_pagination_fix', plugins_url() . '/advance-pods-management/pods-pagination-fix.js', array(),'1.0.0', true );
+		wp_enqueue_script( 'pods_pagination_fix', plugin_dir_url( __FILE__ ) . 'pods-pagination-fix.js', array(),'1.0.0', true );
 	}
 }
 
